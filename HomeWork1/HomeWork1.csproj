@@ -8,12 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="search-engine.html">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="settings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
       <None Update="img\calendar.svg">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
@@ -36,6 +30,15 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="img\youtube.svg">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="settings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="static\search-engine.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="static\cat.jpg">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

@@ -44,24 +44,53 @@ public class HttpServer
                 
                 var response = context.Response;
                 
-                string htmlFilePath = Path.Combine(AppContext.BaseDirectory, "search-engine.html");
+                string requestPath = context.Request.Url?.AbsolutePath ?? "/";
                 
-                string htmlText;
-                if (File.Exists(htmlFilePath))
+                string relativePath = requestPath;
+                if (relativePath.StartsWith("/connection/"))
                 {
-                    htmlText = File.ReadAllText(htmlFilePath, Encoding.UTF8);
+                    relativePath = relativePath.Substring("/connection/".Length);
+                }
+                
+                if (string.IsNullOrEmpty(relativePath) || relativePath == "/")
+                {
+                    relativePath = "search-engine.html";
+                }
+                
+                string filePath = Path.Combine(AppContext.BaseDirectory, "static", relativePath);
+
+                byte[] buffer;
+                
+                if (File.Exists(filePath))
+                {
+                    buffer = File.ReadAllBytes(filePath);
+                    response.StatusCode = 200;
+                    
+                    FileInfo fileInfo = new FileInfo(filePath);
+                    MimeTypeChecker.CheckType(response, fileInfo);
                 }
                 else
                 {
-                    htmlText = "<html><body><h1>Файл search-engine.html не найден!</h1></body></html>";
+                    response.StatusCode = 404; 
+    
+                    string errorFilePath = Path.Combine(AppContext.BaseDirectory, "static", "404.html");
+
+                    if (File.Exists(errorFilePath))
+                    {
+                        buffer = File.ReadAllBytes(errorFilePath);
+                    }
+                    else
+                    {
+                        buffer = Encoding.UTF8.GetBytes("<html><body><h1>404 - Страница не найдена</h1></body></html>");
+                    }
+    
+                    response.ContentType = "text/html; charset=utf-8";
                 }
                 
-                response.ContentType = "text/html; charset=utf-8";
-                byte[] buffer = Encoding.UTF8.GetBytes(htmlText);
                 response.ContentLength64 = buffer.Length;
-                
                 await response.OutputStream.WriteAsync(buffer);
                 response.Close();
+                
             }
             catch (HttpListenerException)
             {
